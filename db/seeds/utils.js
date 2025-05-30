@@ -7,3 +7,10 @@ exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
 
 
 
+exports.createRef = (array, keyField, valueField) => {
+  const lookup = {};
+  array.forEach((item) => {
+    lookup[item[keyField]] = item[valueField];
+  });
+  return lookup;
+};
