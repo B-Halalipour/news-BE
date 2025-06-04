@@ -5,6 +5,7 @@ const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data");
 const request = require("supertest");
 const app = require("../app");
+const articles = require("../db/data/test-data/articles");
 /* Set up your beforeEach & afterAll functions here */
 
 beforeEach(() => {
@@ -30,8 +31,7 @@ describe("GET /api/topics", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
-      .then((response) => {
-        const { topics } = response.body;
+      .then(({ body: { topics } }) => {
         topics.forEach((topic) => {
           expect(typeof topic).toBe("object");
           expect(typeof topic.slug).toBe("string");
@@ -39,5 +39,26 @@ describe("GET /api/topics", () => {
         });
         expect(topics.length).toBeGreaterThan(0);
       });
+  });
+
+  describe("GET /api/articles", () => {
+    test("200: Responds with an object with the key of articles and the value of an array of article objects", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          articles.forEach((article) => {
+            expect(typeof article.author).toBe("string");
+            expect(typeof article.title).toBe("string");
+            expect(typeof article.article_id).toBe("number");
+            expect(typeof article.topic).toBe("string");
+            expect(typeof article.created_at).toBe("string");
+            expect(typeof article.votes).toBe("number");
+            expect(typeof article.article_img_url).toBe("string");
+            expect(typeof article.comment_count).toBe("number");
+          });
+          expect(articles.length).not.toBe(0);
+        });
+    });
   });
 });
