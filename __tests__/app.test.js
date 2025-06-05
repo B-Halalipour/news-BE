@@ -93,6 +93,47 @@ describe("GET /api/topics", () => {
         });
     });
   });
+  describe("GET /api/articles/:article_id/comments", () => {
+    test("Responds with an object with the key of comments and the value of an array of comments for the given article_id", () => {
+      return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then(({ body: { comments } }) => {
+          expect(Array.isArray(comments)).toBe(true);
+          expect(comments.length).toBeGreaterThanOrEqual(0);
+          comments.forEach((comment) => {
+            expect(typeof comment.comment_id).toBe("number");
+            expect(typeof comment.votes).toBe("number");
+            expect(typeof comment.created_at).toBe("string");
+            expect(typeof comment.author).toBe("string");
+            expect(typeof comment.body).toBe("string");
+            expect(comment.article_id).toBe(1);
+          });
+          for (let i = 0; i < comments.length - 1; i++) {
+            expect(new Date(comments[i].created_at)).toBeGreaterThanOrEqual(
+              new Date(comments[i + 1].created_at)
+            );
+          }
+        });
+    });
+    test("400: responds with error for invalid article_id", () => {
+      return request(app)
+        .get("/api/articles/notanumber/comments")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+    test("404: responds with custom error message when article not found", () => {
+      return request(app)
+        .get("/api/articles/9999999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("not found");
+        });
+    });
+  });
+
   describe("GET /api/users", () => {
     test("200: Responds with an object with the key of users and the value of an array of objects", () => {
       return request(app)
