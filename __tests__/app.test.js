@@ -61,6 +61,38 @@ describe("GET /api/topics", () => {
         });
     });
   });
+  describe("GET /api/articles/:article_id", () => {
+    test("200: Responds with an object with the key of article and the value of an article object", () => {
+      return request(app)
+        .get("/api/articles/2")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(typeof article.author).toBe("string");
+          expect(typeof article.title).toBe("string");
+          expect(typeof article.article_id).toBe("number");
+          expect(typeof article.topic).toBe("string");
+          expect(typeof article.created_at).toBe("string");
+          expect(typeof article.votes).toBe("number");
+          expect(typeof article.article_img_url).toBe("string");
+        });
+    });
+    test("400: responds with an error if id is not valid", () => {
+      return request(app)
+        .get("/api/articles/notanum")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+    test("404: responds with custom error message when article not found", () => {
+      return request(app)
+        .get("/api/articles/9999999")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("not found");
+        });
+    });
+  });
   describe("GET /api/users", () => {
     test("200: Responds with an object with the key of users and the value of an array of objects", () => {
       return request(app)
