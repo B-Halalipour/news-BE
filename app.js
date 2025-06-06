@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 const db = require("./db/connection");
 const endpoints = require("./endpoints.json");
 const { getTopics } = require("./controllers/topics.controller");
@@ -14,6 +15,7 @@ const {
   handleServerErrors,
   handleCustomErrors,
 } = require("./errors");
+const { addCommentsByArticleId } = require("./controllers/comments.controller");
 
 app.get("/api", (req, res) => {
   res.status(200).send({ endpoints });
@@ -24,6 +26,7 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.post("/api/articles/:article_id/comments", addCommentsByArticleId);
 
 app.use(handlePostgressErrors);
 app.use(handleCustomErrors);

@@ -149,4 +149,39 @@ describe("GET /api/topics", () => {
         });
     });
   });
+  describe("POST /api/articles/:article_id/comments", () => {
+    test("201: posts a comment and returns it", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({
+          username: "butter_bridge",
+          body: "Great article!",
+        })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.comment).toMatchObject({
+            author: "butter_bridge",
+            body: "Great article!",
+            article_id: 1,
+          });
+        });
+    });
+
+    test("400: missing fields", () => {
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send({ username: "butter_bridge" })
+        .expect(400);
+    });
+
+    test("400: invalid article_id", () => {
+      return request(app)
+        .post("/api/articles/not-a-number/comments")
+        .send({
+          username: "butter_bridge",
+          body: "Nice",
+        })
+        .expect(400);
+    });
+  });
 });
