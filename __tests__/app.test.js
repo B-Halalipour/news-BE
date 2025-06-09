@@ -138,6 +138,22 @@ describe("GET /api/topics", () => {
           expect(typeof article.article_img_url).toBe("string");
         });
     });
+    test("200: responds with a single article object including comment_count", () => {
+      return request(app)
+        .get("/api/articles/1")
+        .expect(200)
+        .then(({ body: { article } }) => {
+          expect(article).toHaveProperty("article_id", 1);
+          expect(article).toHaveProperty("title", expect.any(String));
+          expect(article).toHaveProperty("topic", expect.any(String));
+          expect(article).toHaveProperty("author", expect.any(String));
+          expect(article).toHaveProperty("body", expect.any(String));
+          expect(article).toHaveProperty("created_at", expect.any(String));
+          expect(article).toHaveProperty("votes", expect.any(Number));
+          expect(article).toHaveProperty("comment_count", expect.any(Number));
+        });
+    });
+
     test("400: responds with an error if id is not valid", () => {
       return request(app)
         .get("/api/articles/notanum")
