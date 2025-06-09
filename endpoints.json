@@ -10,7 +10,12 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all articles",
+    "description": "Serves an array of all articles. Accepts queries to sort, order, and filter articles by topic.",
+    "queries": [
+      "sort_by (optional): column to sort by. Defaults to 'created_at'",
+      "order (optional): 'asc' or 'desc'. Defaults to 'desc'",
+      "topic (optional): filters the articles by the topic value specified"
+    ],
     "exampleResponse": {
       "articles": [
         {
