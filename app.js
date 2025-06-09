@@ -8,6 +8,8 @@ const {
   getArticles,
   getArticleById,
   getCommentsByArticleId,
+
+  patchArticleById,
 } = require("./controllers/articles.controller");
 const { getUsers } = require("./controllers/users.controller");
 const {
@@ -27,6 +29,7 @@ app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addCommentsByArticleId);
+app.patch("/api/articles/:article_id", patchArticleById);
 
 app.use(handlePostgressErrors);
 app.use(handleCustomErrors);

@@ -184,4 +184,45 @@ describe("GET /api/topics", () => {
         .expect(400);
     });
   });
+  describe("PATCH /api/articles/:article_id", () => {
+    test("200: successfully updates the vote count", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 10 })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.article).toHaveProperty("votes", expect.any(Number));
+        });
+    });
+
+    test("400: invalid article_id", () => {
+      return request(app)
+        .patch("/api/articles/not-a-number")
+        .send({ inc_votes: 1 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("bad request");
+        });
+    });
+
+    test("400: missing inc_votes in body", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({})
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid or missing inc_votes");
+        });
+    });
+
+    test("404: article_id not found", () => {
+      return request(app)
+        .patch("/api/articles/9999")
+        .send({ inc_votes: 5 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found");
+        });
+    });
+  });
 });
