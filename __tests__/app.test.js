@@ -6,6 +6,7 @@ const data = require("../db/data/test-data");
 const request = require("supertest");
 const app = require("../app");
 const articles = require("../db/data/test-data/articles");
+require("jest-sorted");
 /* Set up your beforeEach & afterAll functions here */
 
 beforeEach(() => {
@@ -58,6 +59,67 @@ describe("GET /api/topics", () => {
             expect(typeof article.comment_count).toBe("number");
           });
           expect(articles.length).not.toBe(0);
+        });
+    });
+  });
+  describe("GET /api/articles with queries", () => {
+    test("200: sorts articles by title in ascending order (default)", () => {
+      return request(app)
+        .get("/api/articles?sort_by=title")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).toBeSortedBy("title", { ascending: true });
+        });
+    });
+    test("200: sorts articles by created_at in descending order", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at&order=desc")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).toBeSortedBy("created_at", { descending: true });
+        });
+    });
+    test("200: filters articles by topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles.length).toBeGreaterThan(0);
+          articles.forEach((article) => {
+            expect(article.topic).toBe("mitch");
+          });
+        });
+    });
+    test("400: responds with 'Invalid sort_by column' for non-existent column", () => {
+      return request(app)
+        .get("/api/articles?sort_by=notacolumn")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid sort_by column");
+        });
+    });
+    test("400: responds with 'Invalid order query' for bad order value", () => {
+      return request(app)
+        .get("/api/articles?order=banana")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid order query");
+        });
+    });
+    test("404: topic does not exist", () => {
+      return request(app)
+        .get("/api/articles?topic=ghosts")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Topic not found");
+        });
+    });
+    test("200: topic has no articles returns empty array", () => {
+      return request(app)
+        .get("/api/articles?topic=paper") // assuming 'paper' exists but has 0 articles
+        .expect(200)
+        .then(({ body: { articles } }) => {
+          expect(articles).toEqual([]);
         });
     });
   });
