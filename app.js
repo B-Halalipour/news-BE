@@ -8,10 +8,10 @@ const {
   getArticles,
   getArticleById,
   getCommentsByArticleId,
-
   patchArticleById,
 } = require("./controllers/articles.controller");
 const { getUsers } = require("./controllers/users.controller");
+const { deleteCommentById } = require("./controllers/comments.controller");
 const {
   handlePostgressErrors,
   handleServerErrors,
@@ -30,7 +30,7 @@ app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addCommentsByArticleId);
 app.patch("/api/articles/:article_id", patchArticleById);
-
+app.delete("/api/comments/:comment_id", deleteCommentById);
 app.use(handlePostgressErrors);
 app.use(handleCustomErrors);
 

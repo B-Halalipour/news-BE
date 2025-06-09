@@ -1,4 +1,7 @@
-const { insertComment } = require("../models/comments.model");
+const {
+  insertComment,
+  removeCommentById,
+} = require("../models/comments.model");
 
 function addCommentsByArticleId(req, res, next) {
   const { article_id } = req.params;
@@ -17,4 +20,13 @@ function addCommentsByArticleId(req, res, next) {
     .catch(next);
 }
 
-module.exports = { addCommentsByArticleId };
+const deleteCommentById = function (req, res, next) {
+  const { comment_id } = req.params;
+
+  removeCommentById(comment_id)
+    .then(() => {
+      res.status(204).send();
+    })
+    .catch(next);
+};
+module.exports = { addCommentsByArticleId, deleteCommentById };

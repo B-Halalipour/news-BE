@@ -85,5 +85,19 @@
         "description": "Article not found."
       }
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes a comment by comment_id.",
+    "responses": {
+      "204": {
+        "description": "Comment successfully deleted. No content returned."
+      },
+      "400": {
+        "description": "Bad request – invalid comment_id."
+      },
+      "404": {
+        "description": "Comment not found."
+      }
+    }
   }
 }
