@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "public")));
 const db = require("./db/connection");
 const endpoints = require("./endpoints.json");
 const { getTopics } = require("./controllers/topics.controller");
@@ -18,7 +21,9 @@ const {
   handleCustomErrors,
 } = require("./errors");
 const { addCommentsByArticleId } = require("./controllers/comments.controller");
-
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 app.get("/api", (req, res) => {
   res.status(200).send({ endpoints });
 });

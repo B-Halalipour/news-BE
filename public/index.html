@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Behnoud News API Documentation</title>
+  </head>
+  <body>
+    <header>
+      <h1>Behnoud News API</h1>
+      <p>Base URL: <code>https://behnoud-news-api.onrender.com/api</code></p>
+      <nav>
+        <ul>
+          <li><a href="#get-api">GET /api</a></li>
+          <li><a href="#get-api-topics">GET /api/topics</a></li>
+          <li><a href="#get-api-articles">GET /api/articles</a></li>
+          <li><a href="#get-api-users">GET /api/users</a></li>
+
+          <li>
+            <a href="#get-api-article-id">GET /api/articles/:article_id</a>
+          </li>
+          <li>
+            <a href="#post-api-article-comments"
+              >POST /api/articles/:article_id/comments</a
+            >
+          </li>
+          <li>
+            <a href="#patch-api-article-id">PATCH /api/articles/:article_id</a>
+          </li>
+          <li>
+            <a href="#delete-api-comment-id"
+              >DELETE /api/comments/:comment_id</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main>
+      <section id="get-api">
+        <h2>GET /api</h2>
+        <p>
+          <strong>Description:</strong> Serves up a JSON object representing all
+          available API endpoints, their descriptions, expected inputs, and
+          example responses.
+        </p>
+
+        <h3>Example Response</h3>
+        <pre><code>{
+  "GET /api": {
+    "description": "serves up a json representation of all the available endpoints of the api"
+  },
+  "GET /api/topics": {
+    "description": "serves an array of all topics"
+  },
+  "GET /api/articles": {
+    "description": "Serves an array of all articles. Accepts queries to sort, order, and filter articles by topic."
+  },
+  "GET /api/users": {
+    "description": "Serves an array of all users."
+  }
+}</code></pre>
+      </section>
+
+      <section id="get-api-topics">
+        <h2>GET /api/topics</h2>
+        <p><strong>Description:</strong> Serves an array of all topics.</p>
+
+        <h3>Queries:</h3>
+        <p>This endpoint does not accept any queries</p>
+
+        <h3>Example Response</h3>
+        <pre><code>
+    {
+      "topics": [{ "slug": "football", "description": "Footie!" }]
+    }
+        </code></pre>
+      </section>
+
+      <section id="get-api-articles">
+        <h2>GET /api/articles</h2>
+        <p><strong>Description:</strong> Serves an array of all articles.</p>
+
+        <h3>Queries:</h3>
+        <p>Accepts queries to sort, order, and filter articles by topic.</p>
+
+        <h3>Example Response</h3>
+        <pre>
+{
+    "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 0,
+          "comment_count": 6
+        }
+      ]
+    }</pre
+        >
+      </section>
+
+      <section id="get-api-users">
+        <h2>GET /api/users</h2>
+        <p><strong>Description:</strong> Serves an array of all users.</p>
+
+        <h3>Queries:</h3>
+        <p>This endpoint does not accept any query parameters.</p>
+
+        <h3>Example Response:</h3>
+        <pre><code>{
+  "users": [
+    {
+      "username": "tickle122",
+      "name": "Tom Tickle",
+      "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/d/d6/Mr-Tickle-9a.png/revision/latest?cb=20180127221953"
+    },
+    {
+      "username": "grumpy19",
+      "name": "Paul Grump",
+      "avatar_url": "https://vignette.wikia.nocookie.net/mrmen/images/7/78/Mr-Grumpy-3A.PNG/revision/latest?cb=20170707233013"
+    }
+  ]
+}</code></pre>
+      </section>
+
+      <section id="get-api-article-id">
+        <h2>GET /api/articles/article_id</h2>
+        <p>
+          <strong>Description:</strong> Serves a single article by its
+          article_id, including the total number of comments on that article.
+        </p>
+        <h3>Example Response</h3>
+
+        <pre><code>{
+    "article": {
+        "author": "weegembump",
+        "title": "Seafood substitutions are increasing",
+        "article_id": 1,
+        "body": "Text of the article",
+        "topic": "cooking",
+        "created_at": "2018-05-30T15:59:13.341Z",
+        "votes": 0,
+        "comment_count": 6,
+        "article_img_url": "https://example.com/image.jpg"
+  }
+}</code>
+        </pre>
+      </section>
+
+      <section id="post-api-article-comments">
+        <h2>POST /api/articles/:article_id/comments</h2>
+        <p>
+          <strong>Description:</strong> Adds a new comment to the given article.
+          Requires <code>username</code> and <code>body</code> in the request
+          body.
+        </p>
+        <h3>Request Body:</h3>
+        <pre><code>{
+  "username": "butter_bridge",
+  "body": "Nice article!"
+}</code></pre>
+
+        <h3>Example Response</h3>
+        <pre><code>{
+  "comment": {
+    "comment_id": 123,
+    "body": "Nice article!",
+    "article_id": 1,
+    "author": "butter_bridge",
+    "created_at": "2025-06-06T12:34:56.789Z",
+    "votes": 0
+  }
+}</code></pre>
+      </section>
+
+      <section id="patch-api-article-id">
+        <h2>PATCH /api/articles/:article_id</h2>
+        <p>
+          <strong>Description:</strong> Updates the vote count of the specified
+          article by <code>article_id</code>.
+        </p>
+        <h3>Request Body:</h3>
+        <pre><code>{
+  "inc_votes": 1
+}</code></pre>
+        <h3>200 Example Response</h3>
+        <pre><code>{
+  "article": {
+    "article_id": 1,
+    "title": "Seafood substitutions are increasing",
+    "body": "Text of the article",
+    "votes": 110,
+    "topic": "cooking",
+    "author": "weegembump",
+    "created_at": "2018-05-30T15:59:13.341Z",
+    "article_img_url": "https://example.com/image.jpg"
+  }
+}</code></pre>
+        <h3>Other Possible Responses</h3>
+        <ul>
+          <li>
+            <strong>400:</strong> Bad request – missing or invalid
+            <code>inc_votes</code>, or invalid <code>article_id</code>.
+          </li>
+          <li><strong>404:</strong> Article not found.</li>
+        </ul>
+      </section>
+
+      <section id="delete-api-comment-id">
+        <h2>DELETE /api/comments/:comment_id</h2>
+        <p>
+          <strong>Description:</strong> Deletes a comment by
+          <code>comment_id</code>.
+        </p>
+        <h3>Possible Responses:</h3>
+        <ul>
+          <li>
+            <strong>204:</strong> Comment successfully deleted. No content
+            returned.
+          </li>
+          <li>
+            <strong>400:</strong> Bad request – invalid <code>comment_id</code>.
+          </li>
+          <li><strong>404:</strong> Comment not found.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Authentication</h2>
+        <p>
+          This API does not require authentication for read operations. Posting
+          data requires a valid <code>username</code>.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>© 2025 Behnoud News API</p>
+    </footer>
+  </body>
+</html>
