@@ -1,8 +1,11 @@
 const { fetchUsers } = require("../models/users.model");
 
-const getUsers = function (req, res) {
-  fetchUsers().then((users) => {
-    res.status(200).send({ users });
-  });
+const getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
+    })
+    .catch(next);
 };
+
 module.exports = { getUsers };

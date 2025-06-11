@@ -1,10 +1,14 @@
 const express = require("express");
-const app = express();
 const path = require("path");
+const app = express();
+
+// Middleware
 app.use(express.json());
 
+// Serve static HTML docs from /public
 app.use(express.static(path.join(__dirname, "public")));
-const db = require("./db/connection");
+
+// Routes & Controllers
 const endpoints = require("./endpoints.json");
 const { getTopics } = require("./controllers/topics.controller");
 const {
@@ -14,16 +18,23 @@ const {
   patchArticleById,
 } = require("./controllers/articles.controller");
 const { getUsers } = require("./controllers/users.controller");
-const { deleteCommentById } = require("./controllers/comments.controller");
+const {
+  addCommentsByArticleId,
+  deleteCommentById,
+} = require("./controllers/comments.controller");
+
+// Error handling middleware
 const {
   handlePostgressErrors,
   handleServerErrors,
   handleCustomErrors,
 } = require("./errors");
-const { addCommentsByArticleId } = require("./controllers/comments.controller");
+
+// Routes
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
 app.get("/api", (req, res) => {
   res.status(200).send({ endpoints });
 });
@@ -31,13 +42,15 @@ app.get("/api", (req, res) => {
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
-app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.post("/api/articles/:article_id/comments", addCommentsByArticleId);
 app.patch("/api/articles/:article_id", patchArticleById);
+app.get("/api/users", getUsers);
 app.delete("/api/comments/:comment_id", deleteCommentById);
+
+// Error handling middleware
 app.use(handlePostgressErrors);
 app.use(handleCustomErrors);
-
 app.use(handleServerErrors);
+
 module.exports = app;
