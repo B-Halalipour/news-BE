@@ -2,9 +2,12 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
+const cors = require('cors');
+
+
 // Middleware
 app.use(express.json());
-
+app.use(cors());
 // Serve static HTML docs from /public
 app.use(express.static(path.join(__dirname, "public")));
 
